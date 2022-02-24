@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+        integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+
+    <div class="main_div">
+        <div class="music_container">
+            <h2 id="title">Yad e Mustafa(s.a.w) aisi bass</h2>
+            <h3 id="artist">Asad Atari</h3>
+            <div class="img_container">
+                <img src="image/Naat-1.jpg" alt="not found" srcset="">
+            </div>
+            <audio src="Naat/Naat-1.mp3"></audio>
+
+            <div class="progressbar_container" id="progress_container">
+                <div class="progress_duration_meter">
+                    <div  id="current_time"> 0.00</div>
+                    <div id="duration">0.09</div>
+                </div>
+                <div class="progress_div" id="progress_div">
+                    <div class="progress" id="progress"></div>
+                </div>
+            </div>
+            <!-- play controls -->
+            <div class="play_controls">
+                <i class="fas fa-backward" id="pre" title="Previous"></i>
+                <i class="fas fa-play main-button" id="play" title="Play"></i>
+                <i class="fas fa-forward" id="next" title="Next"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        //    for play
+        const img = document.querySelector('img')
+        const mus = document.querySelector('audio');
+        const play = document.getElementById('play');
+        const title = document.getElementById('title');
+        const artist = document.getElementById('artist');
+        const pre = document.getElementById('pre');
+        const next = document.getElementById('next');
+        let duration_tot = document.getElementById('duration');
+        let progress = document.getElementById('progress');
+        let ctime = document.getElementById('current_time');
+        const progress_div = document.getElementById('progress_div');
+    
+        const songs = [
+            {
+                name: "Naat-1",
+                artist: "Asad Atari",
+                title: "Yad e Mustafa(s.a.w) aisi bass",
+            },
+            {
+                name: "Naat-2",
+                artist: "Zohaib Ashrafi",
+                title: "Unka Mangta Hoon",
+            },
+            {
+                name: "Naat-3",
+                artist: "Hafiz Umer Farooq Naqshbandi",
+                title: "Ae Ghafoor Ur Raheem",
+            },
+            {
+                name: "Naat-4",
+                artist: "Atiq Ur Rehman",
+                title: "Wo Sara Cheen Leta Hay",
+            },
+            {
+                name: "Naat-5",
+                artist: "Zahid hassan",
+                title: "Mera Rab Muj Sy Puchy Ga ",
+            },
+            {
+                name: "Naat-6",
+                artist: "Zahid Ur Rehman",
+                title: "Hayya Ala Khairil ",
+            },
+
+        ];
+
+
+        let isPlaying = false;
+        const playMusic = () => {
+            isPlaying = true;
+            mus.play();
+            play.classList.replace('fa-play', 'fa-pause');
+            img.classList.add("aime");
+        };
+
+        // for pause
+        const pauseMusic = () => {
+            isPlaying = false;
+            mus.pause();
+            play.classList.replace('fa-pause', 'fa-play');
+            img.classList.remove("aime");
+        };
+
+        play.addEventListener("click", () => {
+            isPlaying ? pauseMusic() : playMusic();
+        });
+
+
+
+        // changing music data
+
+        const loadSong = (songs) => {
+            title.textContent = songs.title;
+            artist.textContent = songs.artist;
+            mus.src = "Naat/" + songs.name + ".mp3";
+            img.src = "image/" + songs.name + ".jpg";
+        };
+
+        songIndex = 0;
+        const nextSong = () => {
+            songIndex = (songIndex + 1) % songs.length;
+            loadSong(songs[songIndex]);
+            playMusic();
+        };
+        const preSong = () => {
+            songIndex = (songIndex - 1 + songs.length) % songs.length;
+            loadSong(songs[songIndex]);
+            playMusic();
+        }
+
+
+        // for progress
+        mus.addEventListener("timeupdate", (event) => {
+
+            const { currentTime, duration } = event.srcElement;
+            //fro progress bar running at play buttton
+            let prog = (currentTime / duration) * 100;
+            progress.style.width = `${prog}%`;
+
+            //find dur in min and sec
+            let minn = Math.floor(duration / 60);
+            let secc = Math.floor(duration % 60);
+            if (secc < 10)  {
+                secc = `0${secc}`;
+            }
+            let dur = `${minn}:${secc}`;            
+            if (duration ) { 
+                duration_tot.textContent = `${dur}`;  
+            }
+// for sec current time
+            let mint = Math.floor(currentTime / 60);
+            let sect = Math.floor(currentTime % 60);
+            if (sect < 10)  {
+                sect = `0${sect}`;
+            }
+
+            let durt = `${mint}:${sect}`;
+                ctime.textContent = `${durt}`; 
+            
+         
+        });
+
+
+        progress_div.addEventListener("click", (event) => {
+  console.log(event);
+
+const {duration} = mus;
+let mov = (event.offsetX / event.srcElement.clientWidth) * duration;
+mus.currentTime = mov;
+        });
+
+        //for play next song then nextsong in replace of pauseMusic
+        mus.addEventListener("ended",  pauseMusic);
+       
+        next.addEventListener("click", nextSong);
+        pre.addEventListener("click", preSong);
+
+
+
+    
+    </script>
+
+
+</body>
+
+</html>
